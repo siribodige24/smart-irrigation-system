@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-An Arduino-based system designed to automate irrigation based on soil moisture and rainfall conditions while detecting animal intrusion.
+An Arduino-based embedded system designed to automate irrigation based on soil moisture and rainfall conditions while detecting possible animal intrusion.
+
+The system monitors soil moisture, rainfall, and obstacles using sensors. Based on the sensor readings, it automatically controls a water pump and provides an alert when an obstacle is detected.
 
 ## Components Used
 
@@ -21,25 +23,63 @@ An Arduino-based system designed to automate irrigation based on soil moisture a
 - Embedded C
 - Sensor Interfacing
 - Automation
+- Digital and Analog Input/Output
 
 ## Key Features
 
-- Automatic irrigation based on soil moisture
-- Rain detection
-- Animal intrusion detection
+- Automatic irrigation based on soil moisture level
+- Rainfall detection
 - Automatic water pump control
-- Buzzer alert for intrusion
-- Real-time status display using 16x2 I2C LCD
+- Animal intrusion detection
+- Buzzer alert for detected obstacles
+- Real-time status display using a 16x2 I2C LCD
 
 ## Working
 
-The soil moisture sensor monitors the moisture level of the soil. When the soil becomes dry and there is no rain, the Arduino activates the water pump through the relay.
+### 1. Soil Moisture Monitoring
 
-The rain sensor detects rainfall conditions and prevents unnecessary irrigation.
+The soil moisture sensor measures the moisture level of the soil.
 
-The IR/obstacle sensor detects possible animal intrusion. When an obstacle is detected, the buzzer is activated as an alert.
+- If the soil value is greater than 700, the soil is considered **DRY**.
+- Otherwise, the soil is considered **WET**.
 
-The LCD displays the soil condition, rain status, pump status, and obstacle detection status.
+### 2. Rain Detection
+
+The rain sensor checks whether rainfall is detected.
+
+The system uses the rain condition along with the soil moisture condition to control irrigation.
+
+### 3. Automatic Irrigation
+
+When the soil is dry and rain is not detected, the Arduino activates the relay, which turns ON the water pump.
+
+When the required conditions are not satisfied, the pump remains OFF.
+
+### 4. Intrusion Detection
+
+The IR/obstacle sensor is used to detect a possible animal or obstacle near the system.
+
+When an obstacle is detected, the buzzer is activated to provide an alert.
+
+### 5. LCD Display
+
+The 16x2 I2C LCD displays:
+
+- Soil condition
+- Rain status
+- Pump status
+- Obstacle status
+
+## Pin Configuration
+
+| Component | Arduino Pin |
+|---|---|
+| Soil Moisture Sensor | A0 |
+| Rain Sensor | D2 |
+| IR/Obstacle Sensor | D3 |
+| Relay Module | D4 |
+| Buzzer | D5 |
+| I2C LCD | I2C |
 
 ## Libraries Used
 
@@ -53,3 +93,25 @@ Arduino Uno
 ## Project Type
 
 Embedded Systems / Arduino Project
+
+## Project Features
+
+- Sensor-based monitoring
+- Automated irrigation
+- Environmental condition detection
+- Intrusion alert system
+- Real-time LCD monitoring
+- Relay-controlled water pump
+
+## Future Improvements
+
+- Mobile application for remote monitoring
+- IoT-based monitoring
+- Real-time notifications
+- Cloud-based sensor data storage
+- Remote control of irrigation
+- Solar-powered operation
+
+## Project Prototype
+
+![Smart Irrigation System](Code/project.jpg)
