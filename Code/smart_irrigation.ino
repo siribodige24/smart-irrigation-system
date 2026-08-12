@@ -11,6 +11,9 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define RELAY 4
 #define BUZZER 5
 
+// Soil moisture threshold
+#define SOIL_THRESHOLD 700
+
 int soilValue;
 
 void setup() {
@@ -19,7 +22,8 @@ void setup() {
   pinMode(RELAY, OUTPUT);
   pinMode(BUZZER, OUTPUT);
 
-  digitalWrite(RELAY, HIGH); // Pump OFF initially (for active LOW relay)
+  // Active LOW relay: HIGH = Pump OFF
+  digitalWrite(RELAY, HIGH);
 
   lcd.init();
   lcd.backlight();
@@ -29,39 +33,44 @@ void setup() {
 
 void loop() {
 
-  // Read sensors
+  // Read sensor values
   soilValue = analogRead(SOIL);
   int rainValue = digitalRead(RAIN);
   int irValue = digitalRead(IR);
 
-  // Soil condition
+  // ---------------- SOIL CONDITION ----------------
   String soilStatus;
-  if (soilValue > 700) {
+
+  if (soilValue > SOIL_THRESHOLD) {
     soilStatus = "DRY";
   } else {
     soilStatus = "WET";
   }
 
-  // Rain condition
+  // ---------------- RAIN CONDITION ----------------
   String rainStatus;
+
   if (rainValue == LOW) {
     rainStatus = "YES";
   } else {
     rainStatus = "NO";
   }
 
-  // Pump control using IF-ELSE
+  // ---------------- PUMP CONTROL ----------------
   String pumpStatus;
-  if (soilValue > 700 && rainValue == HIGH) {
-    digitalWrite(RELAY, LOW);   // Pump ON (active LOW relay)
+
+  // Pump ON when soil is dry and there is no rain
+  if (soilValue > SOIL_THRESHOLD && rainValue == HIGH) {
+    digitalWrite(RELAY, LOW);
     pumpStatus = "ON";
   } else {
-    digitalWrite(RELAY, HIGH);  // Pump OFF
+    digitalWrite(RELAY, HIGH);
     pumpStatus = "OFF";
   }
 
-  // IR + Buzzer
+  // ---------------- INTRUSION DETECTION ----------------
   String obstacleStatus;
+
   if (irValue == LOW) {
     digitalWrite(BUZZER, HIGH);
     obstacleStatus = "YES";
@@ -70,8 +79,9 @@ void loop() {
     obstacleStatus = "NO";
   }
 
-  // Display on LCD
+  // ---------------- LCD DISPLAY ----------------
   lcd.clear();
+
   lcd.setCursor(0, 0);
   lcd.print("S:");
   lcd.print(soilStatus);
@@ -83,6 +93,16 @@ void loop() {
   lcd.print(pumpStatus);
   lcd.print(" O:");
   lcd.print(obstacleStatus);
+
+  // Serial monitor
+  Serial.print("Soil: ");
+  Serial.print(soilValue);
+  Serial.print(" | Rain: ");
+  Serial.print(rainStatus);
+  Serial.print(" | Pump: ");
+  Serial.print(pumpStatus);
+  Serial.print(" | Obstacle: ");
+  Serial.println(obstacleStatus);
 
   delay(1000);
 }
