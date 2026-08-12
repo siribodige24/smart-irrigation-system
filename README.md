@@ -4,7 +4,7 @@
 
 An Arduino-based embedded system designed to automate irrigation based on soil moisture and rainfall conditions while detecting possible animal intrusion.
 
-The system monitors soil moisture, rainfall, and obstacles using sensors. Based on the sensor readings, it automatically controls a water pump and provides an alert when an obstacle is detected.
+The system monitors soil moisture, rainfall, and obstacles using sensors. Based on the sensor readings, it automatically controls a water pump through a relay and activates a buzzer when an obstacle is detected. A 16x2 I2C LCD provides real-time information about soil, rain, pump, and obstacle status.
 
 ## Components Used
 
@@ -45,21 +45,25 @@ The soil moisture sensor measures the moisture level of the soil.
 
 ### 2. Rain Detection
 
-The rain sensor checks whether rainfall is detected.
+The rain sensor is used to detect rainfall conditions.
 
-The system uses the rain condition along with the soil moisture condition to control irrigation.
+- LOW → Rain detected
+- HIGH → No rain detected
+
+The rain condition is considered along with the soil moisture level to control the water pump.
 
 ### 3. Automatic Irrigation
 
-When the soil is dry and rain is not detected, the Arduino activates the relay, which turns ON the water pump.
+The soil moisture sensor determines whether the soil is dry or wet using a threshold value of 700.
 
-When the required conditions are not satisfied, the pump remains OFF.
+When the soil is dry and no rain is detected, the Arduino activates the relay and turns ON the water pump.
 
+If the soil is wet or rain is detected, the water pump remains OFF.
 ### 4. Intrusion Detection
 
-The IR/obstacle sensor is used to detect a possible animal or obstacle near the system.
+The IR/obstacle sensor is used to detect a possible animal or obstacle.
 
-When an obstacle is detected, the buzzer is activated to provide an alert.
+When an obstacle is detected, the Arduino activates the buzzer and displays the obstacle status on the LCD.
 
 ### 5. LCD Display
 
